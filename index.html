@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<title>Growth Audit — Car Auto Play</title>
+<link rel="icon" href="img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: only dark;
+  /* ---- Car Auto Play, extracted from their live screens (v2.0, Oct 2026) ---- */
+  --ca-bg1:#0A1628; --ca-bg2:#081218; --ca-bg3:#0A1D20;
+  --ca-card:#13151C; --ca-card2:#171B23; --ca-line:rgba(255,255,255,.07);
+  --ca-blue:#2677F7; --ca-blue2:#1753D7; --ca-sky:#2F8CFF; --ca-check:#2EA3F2;
+  --ca-ink:#FFFFFF; --ca-txt:#B5BDC9; --ca-muted:#7E8796; --ca-green:#2DBE5B;
+  --r-ctl:16px; --r-media:20px;
+  /* ---- the report shell, in Car Auto Play's own palette (dark app, dark shell) ---- */
+  --bg:#081423; --bg2:#0D1A2C; --surf:#101C2E;
+  --hair:rgba(214,226,245,.10); --hair2:rgba(214,226,245,.18);
+  --ink:#F2F5F9; --ink2:#A9B4C3; --ink3:#6F7B8C;
+  --accent:#2677F7; --accent-lift:#5AA2FF;
+  --panel:#FFFFFF; --panel-ink:#111722; --panel-muted:#5E6875; --panel-line:#E7EAEF;
+  --accent-ink:#1753D7;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 32px}
+@media(max-width:700px){.wrap{padding:0 16px}}
+
+/* ============ top bar ============ */
+.nav{position:sticky;top:0;z-index:70;background:rgba(8,20,35,.86);backdrop-filter:blur(18px) saturate(160%);
+  border-bottom:1px solid var(--hair)}
+.nav-in{max-width:1080px;margin:0 auto;padding:0 32px;height:58px;display:flex;align-items:center;gap:18px}
+@media(max-width:700px){.nav-in{padding:0 16px;gap:12px}}
+.nav-brand{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.nav-brand img{width:26px;height:26px;border-radius:7px;display:block}
+.nav-brand span{color:var(--ink2);font-weight:500}
+.nav-brand b{color:var(--ink);font-weight:600}
+.nav-links{margin-left:auto;display:flex;gap:2px;align-items:center}
+.nav-links button{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:600;color:var(--ink3);transition:.16s}
+.nav-links button:hover{color:var(--ink)}
+.nav-links button.on{color:var(--ink);background:rgba(255,255,255,.08)}
+@media(max-width:640px){.nav-brand span{display:none}}
+
+.view{display:none}
+.view.on{display:block}
+
+/* ============ hero ============ */
+.hero{padding:104px 0 0;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-340px;left:50%;transform:translateX(-50%);
+  width:1100px;height:640px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(38,119,247,.30),transparent 72%)}
+.hero::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(40% 50% at 8% 20%,rgba(120,70,220,.16),transparent 70%),
+   radial-gradient(38% 45% at 92% 18%,rgba(30,160,200,.14),transparent 70%)}
+.hero>*{position:relative;z-index:1}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-lift);margin-bottom:26px}
+.hero h1{font-size:76px;line-height:.98;font-weight:700;letter-spacing:-.045em;margin:0 0 24px}
+@media(max-width:820px){.hero h1{font-size:48px}.hero{padding-top:70px}}
+.hero .lede{font-size:20px;line-height:1.5;font-weight:400;color:var(--ink2);max-width:600px;margin:0 auto;letter-spacing:-.012em}
+@media(max-width:820px){.hero .lede{font-size:17px}}
+.hero .meta{margin-top:30px;font-size:12.5px;color:var(--ink3);letter-spacing:.02em}
+.hero .meta b{color:var(--ink2);font-weight:600}
+
+.stats{display:flex;justify-content:center;gap:0;margin:70px auto 0;max-width:760px;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.stat{flex:1;padding:26px 14px;text-align:center;border-left:1px solid var(--hair)}
+.stat:first-child{border-left:none}
+.stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.03em;color:var(--ink)}
+.stat span{display:block;font-size:11.5px;color:var(--ink3);margin-top:5px;line-height:1.35}
+@media(max-width:700px){.stat b{font-size:19px}.stat{padding:18px 8px}}
+
+.fb{max-width:760px;margin:0 auto;padding:30px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:26px;text-align:left}
+@media(max-width:700px){.fb{grid-template-columns:1fr;gap:20px;padding-top:24px}}
+.fb-k{grid-column:1/-1;font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink3);text-align:center;margin-bottom:-6px}
+.fb-i{display:flex;gap:12px;align-items:flex-start}
+.fb-i .tick{width:18px;height:18px;flex:none;margin-top:3px;border-radius:50%;background:rgba(38,119,247,.22);
+  display:grid;place-items:center}
+.fb-i .tick svg{width:10px;height:10px;stroke:var(--accent-lift);stroke-width:3;fill:none;
+  stroke-linecap:round;stroke-linejoin:round}
+.fb-i p{font-size:14px;line-height:1.55;color:var(--ink2);margin:0}
+.fb-i p b{color:var(--ink);font-weight:700}
+
+.sec{padding:96px 0}
+.sec-k{font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px}
+.sec h2{font-size:38px;line-height:1.14;font-weight:700;letter-spacing:-.035em;margin:0 0 20px;max-width:700px}
+@media(max-width:820px){.sec h2{font-size:28px}.sec{padding:64px 0}}
+.sec p.body{font-size:17px;line-height:1.66;color:var(--ink2);max-width:640px;margin:0 0 18px;letter-spacing:-.008em}
+.sec p.body b{color:var(--ink);font-weight:600}
+.rule{height:1px;background:var(--hair);margin:0}
+
+.notes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px;max-width:820px}
+@media(max-width:760px){.notes{grid-template-columns:1fr}}
+.note{background:var(--surf);border:1px solid var(--hair);border-radius:16px;padding:24px 26px}
+.note h4{font-size:15px;font-weight:700;letter-spacing:-.015em;margin:0 0 8px}
+.note p{font-size:14px;line-height:1.6;color:var(--ink2);margin:0}
+
+.ideas{display:flex;flex-direction:column;gap:0;margin-top:14px;border-top:1px solid var(--hair)}
+.idea{display:grid;grid-template-columns:52px 1fr 180px;gap:26px;align-items:start;
+  padding:30px 4px;border-bottom:1px solid var(--hair);text-align:left;width:100%;transition:.18s}
+.idea:hover{background:rgba(255,255,255,.035)}
+@media(max-width:780px){.idea{grid-template-columns:38px 1fr;gap:16px}}
+.idea .no{font-size:13px;font-weight:700;color:var(--ink3);padding-top:4px;letter-spacing:.02em}
+.idea h3{font-size:21px;line-height:1.25;font-weight:700;letter-spacing:-.024em;margin:0 0 7px}
+@media(max-width:820px){.idea h3{font-size:18px}}
+.idea p{font-size:14.5px;line-height:1.6;color:var(--ink2);margin:0;max-width:540px}
+.idea .out{text-align:right;padding-top:3px}
+@media(max-width:780px){.idea .out{grid-column:2;text-align:left;padding-top:12px}}
+.idea .out b{display:block;font-size:19px;font-weight:700;letter-spacing:-.025em;color:var(--accent-lift);white-space:nowrap}
+.idea .out span{display:block;font-size:10.5px;color:var(--ink3);margin-top:3px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.idea .seeit{display:inline-flex;align-items:center;gap:5px;margin-top:11px;font-size:12.5px;font-weight:600;color:var(--accent-lift)}
+.idea .seeit svg{width:12px;height:12px}
+
+.band{background:var(--surf);border:1px solid var(--hair);border-radius:28px;padding:40px 44px;margin-top:44px;
+  display:flex;align-items:center;gap:36px;flex-wrap:wrap}
+@media(max-width:700px){.band{padding:28px 24px;gap:22px}}
+.band .lab{font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.band .txt{flex:1;min-width:240px}
+.band .txt p{font-size:15.5px;line-height:1.6;color:var(--ink2);margin:0}
+.band .nums{display:flex;gap:34px}
+.band .nums div b{display:block;font-size:30px;font-weight:700;letter-spacing:-.035em;color:var(--accent-lift)}
+.band .nums div span{display:block;font-size:11px;color:var(--ink3);margin-top:2px;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+
+.cta-row{display:flex;justify-content:center;margin-top:52px;align-items:center;gap:22px;flex-wrap:wrap}
+.bigbtn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(90deg,var(--ca-blue),var(--ca-blue2));color:#fff;
+  font-size:15px;font-weight:700;letter-spacing:-.01em;padding:15px 26px;border-radius:30px;transition:.16s;order:1}
+.bigbtn:hover{filter:brightness(1.12)}
+.bigbtn svg{width:15px;height:15px}
+.foot{border-top:1px solid var(--hair);padding:36px 0 70px;font-size:12.5px;line-height:1.6;color:var(--ink3)}
+
+.herobtns{display:flex;justify-content:center;margin-top:30px}
+.ghostbtn{display:inline-flex;align-items:center;gap:10px;background:var(--surf);border:1px solid var(--hair2);color:var(--ink);font-size:14px;
+  font-weight:700;padding:9px 20px 9px 9px;border-radius:30px;transition:.16s}
+.ghostbtn:hover{border-color:rgba(214,226,245,.32)}
+.ghostbtn .pl{width:30px;height:30px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.ghostbtn .pl svg{width:12px;height:12px;fill:#fff;margin-left:2px}
+
+/* ============ prototype stage ============ */
+.stage{display:grid;grid-template-columns:minmax(440px,1fr) minmax(400px,470px);gap:0;align-items:start;min-height:calc(100vh - 58px)}
+@media(max-width:1080px){.stage{grid-template-columns:1fr}}
+.phonecol{padding:34px 24px 46px;display:flex;flex-direction:column;align-items:center;gap:18px}
+.panelcol{border-left:1px solid var(--hair);background:var(--panel);color:var(--panel-ink);
+  min-height:calc(100vh - 58px);position:sticky;top:58px;max-height:calc(100vh - 58px);overflow-y:auto}
+@media(max-width:1080px){.panelcol{position:static;max-height:none;min-height:0;border-left:none;border-top:1px solid var(--hair)}}
+
+.phone{position:relative;width:390px;height:844px;flex:none;background:#000;border:11px solid #000;
+  border-radius:46px;box-shadow:0 0 0 1.5px #2A3A52,0 34px 80px -22px rgba(0,0,0,.7),0 0 120px -30px rgba(38,119,247,.35)}
+.phone-in{position:absolute;inset:0;border-radius:36px;overflow:hidden;background:var(--ca-bg2)}
+.island{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:104px;height:30px;background:#000;border-radius:16px;z-index:60;pointer-events:none}
+.sbar{position:absolute;top:0;left:0;right:0;height:50px;z-index:55;pointer-events:none;display:flex;
+  align-items:center;justify-content:space-between;padding:14px 28px 0 34px;font:700 15px/1 'Inter',sans-serif;color:#fff;transition:color .3s}
+.sbar.dk{color:#0E1726}
+.sbar .glyphs{display:flex;gap:5px;align-items:center}
+.homebar{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.9);z-index:56;pointer-events:none}
+.homebar.dk{background:#0E1726}
+.screenwrap{position:absolute;inset:0;overflow:hidden;background:var(--ca-bg2)}
+
+/* ============ phone screens — Car Auto Play's system, all prefixed scr-/ca- ============ */
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;color:var(--ca-ink);
+  background:linear-gradient(180deg,var(--ca-bg1) 0%,var(--ca-bg2) 55%,var(--ca-bg3) 100%);
+  font-family:'Inter',-apple-system,sans-serif;
+  transform:translateX(100%);transition:transform .36s cubic-bezier(.32,.72,0,1);z-index:10;will-change:transform}
+.scr.is-active{transform:translateX(0);z-index:20}
+.scr.is-past{transform:translateX(-24%)}
+.scr.sheet{transform:translateY(100%);background:transparent}
+.scr.sheet.is-active{transform:translateY(0);z-index:30}
+.scr.nofx{transition:none}
+.scr-top{flex:none;padding:54px 18px 0;position:relative;z-index:2}
+.scr-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 18px;scrollbar-width:none;position:relative;z-index:2}
+.scr-body::-webkit-scrollbar{display:none}
+.scr-body.dock{display:flex;flex-direction:column}
+.scr-foot{flex:none;padding:10px 18px 26px;position:relative;z-index:2}
+
+.ca-nav{display:flex;align-items:center;justify-content:space-between;height:40px}
+.ca-back{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:var(--ca-ink)}
+.ca-back svg{width:18px;height:18px}
+.ca-back.ghost{visibility:hidden}
+.ca-skip{font-size:14px;font-weight:500;color:var(--ca-txt)}
+.ca-h{font-size:24px;line-height:1.18;font-weight:700;letter-spacing:-.02em;margin:10px 0 0;text-align:center}
+.ca-sub{font-size:14px;line-height:1.4;color:var(--ca-txt);margin:6px 0 0;text-align:center}
+.ca-btn{display:block;width:100%;height:52px;border-radius:26px;background:linear-gradient(90deg,var(--ca-blue),var(--ca-blue2));color:#fff;
+  font:600 17px/1 'Inter',sans-serif;letter-spacing:-.005em;transition:filter .15s;box-shadow:0 8px 22px -10px rgba(38,119,247,.8)}
+.ca-btn:hover{filter:brightness(1.08)}
+.ca-dots{display:flex;gap:5px;justify-content:center;margin-top:16px}
+.ca-dots i{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.3);transition:width .25s}
+.ca-dots i.on{width:22px;background:#fff}
+
+/* welcome carousel */
+.scr--wel .scr-top{padding:0}
+.ca-wimg{position:absolute;left:0;right:0;top:0;height:560px;overflow:hidden}
+.ca-wimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;opacity:0;transition:opacity .45s}
+.ca-wimg img.on{opacity:1}
+.ca-wimg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,22,40,0) 45%,var(--ca-bg2) 96%)}
+.scr--wel .scr-body{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:6px}
+.ca-wh{font-size:28px;line-height:1.16;font-weight:700;letter-spacing:-.022em;text-align:center}
+.ca-ws{font-size:14.5px;line-height:1.45;color:var(--ca-txt);text-align:center;margin:10px 10px 0}
+
+/* brand / model / year */
+.ca-steps{display:flex;gap:8px;margin:18px 0 0;flex-wrap:nowrap}
+.ca-step{height:32px;padding:0 13px;border-radius:16px;border:1px solid rgba(255,255,255,.12);font-size:13px;font-weight:500;color:var(--ca-txt);
+  display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ca-step.cur{border-color:var(--ca-sky);color:#fff;box-shadow:inset 0 0 0 1px var(--ca-sky)}
+.ca-step.done{background:rgba(255,255,255,.08);border-color:transparent;color:#fff}
+.ca-step.done i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.25);display:grid;place-items:center;font-style:normal;font-size:9px;line-height:1}
+.ca-lab{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--ca-muted);text-transform:uppercase;margin:16px 4px 8px}
+.ca-list{background:var(--ca-card);border-radius:var(--r-ctl);overflow:hidden}
+.ca-row{display:flex;align-items:center;gap:13px;width:100%;padding:0 14px;height:52px;text-align:left;font-size:15.5px;font-weight:600;color:#fff;
+  border-bottom:1px solid var(--ca-line);transition:background .15s}
+.ca-row:last-child{border-bottom:none}
+.ca-row img{width:34px;height:34px;border-radius:9px;display:block;flex:none}
+.ca-row.on{background:rgba(47,140,255,.14)}
+.ca-row .ck{margin-left:auto;width:20px;height:20px;border-radius:50%;background:var(--ca-sky);display:none;place-items:center}
+.ca-row.on .ck{display:grid}
+.ca-row .ck svg{width:11px;height:11px;stroke:#fff;stroke-width:3.2;fill:none}
+.ca-search{display:flex;align-items:center;gap:10px;height:46px;border-radius:23px;background:var(--ca-card2);padding:0 16px;color:var(--ca-muted);font-size:15px}
+.ca-search svg{width:17px;height:17px}
+
+/* use case */
+.ca-use{display:block;width:100%;text-align:left;background:var(--ca-card);border:1.5px solid transparent;border-radius:var(--r-media);padding:16px 16px 14px;margin-top:14px;transition:border-color .15s}
+.ca-use.on{border-color:var(--ca-sky);background:#141B28}
+.ca-use .hd{display:flex;align-items:center;gap:13px}
+.ca-use .ic{width:44px;height:44px;border-radius:12px;background:rgba(47,140,255,.16);display:grid;place-items:center;color:var(--ca-sky);flex:none}
+.ca-use .ic svg{width:24px;height:24px}
+.ca-use .tt{flex:1}
+.ca-use .tt b{display:block;font-size:16.5px;font-weight:600;color:#fff}
+.ca-use .tt span{display:block;font-size:13.5px;color:var(--ca-txt);margin-top:1px}
+.ca-use .ch{color:var(--ca-muted)}
+.ca-use ul{list-style:none;margin:12px 0 0 2px}
+.ca-use li{font-size:13px;color:var(--ca-muted);display:flex;gap:8px;align-items:center;line-height:1.9}
+.ca-use li svg{width:11px;height:11px;stroke:var(--ca-muted);stroke-width:3;fill:none}
+
+/* theme */
+.ca-themes{display:flex;flex-direction:column;gap:14px;padding:18px 0 8px}
+.ca-th{position:relative;display:block;width:100%;border-radius:18px;padding:5px;border:2px solid transparent;background:rgba(255,255,255,.04)}
+.ca-th img{display:block;width:100%;height:auto;border-radius:13px}
+.ca-th.on{border-color:var(--ca-sky);box-shadow:0 0 22px -4px rgba(47,140,255,.6)}
+.ca-th .ck{position:absolute;top:12px;right:12px;width:24px;height:24px;border-radius:50%;background:var(--ca-sky);display:none;place-items:center}
+.ca-th.on .ck{display:grid}
+.ca-th .ck svg{width:12px;height:12px;stroke:#fff;stroke-width:3.2;fill:none}
+.ca-th .nm{position:absolute;left:14px;bottom:12px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(8,18,24,.72);padding:4px 8px;border-radius:8px;color:#fff}
+
+/* loader dial */
+.scr--load .scr-body{display:flex;flex-direction:column;align-items:center;padding-top:40px}
+.ca-dial{position:relative;width:250px;height:250px}
+.ca-dial svg{position:absolute;inset:0;width:100%;height:100%}
+.ca-dial .pct{position:absolute;inset:0;display:grid;place-items:center;font-size:54px;font-weight:700;letter-spacing:-.03em}
+.ca-car{font-size:26px;line-height:1.18;font-weight:700;letter-spacing:-.02em;text-align:center;margin-top:26px}
+.ca-lsub{font-size:14.5px;color:var(--ca-txt);margin-top:8px;text-align:center}
+.ca-ls{list-style:none;margin:24px 0 0;align-self:stretch;padding:0 10px}
+.ca-ls li{display:flex;align-items:center;gap:12px;font-size:15.5px;line-height:1.3;color:#fff;font-weight:500;padding:7px 0;opacity:.0;transform:translateY(6px);transition:opacity .3s,transform .3s}
+.ca-ls li.on{opacity:1;transform:none}
+.ca-ls li .c{width:22px;height:22px;border-radius:50%;background:var(--ca-check);display:grid;place-items:center;flex:none}
+.ca-ls li .c svg{width:12px;height:12px;stroke:#fff;stroke-width:3.2;fill:none}
+
+/* ready / payoff */
+.scr--ready .scr-body{display:flex;flex-direction:column;align-items:center;padding-top:6px}
+.ca-carimg{width:300px;height:auto;display:block;-webkit-mask-image:radial-gradient(70% 70% at 50% 52%,#000 62%,transparent 100%);mask-image:radial-gradient(70% 70% at 50% 52%,#000 62%,transparent 100%)}
+.ca-nocar{width:300px;height:150px;border-radius:20px;background:radial-gradient(60% 60% at 50% 60%,rgba(47,140,255,.25),transparent);display:grid;place-items:center;color:var(--ca-sky)}
+.ca-nocar svg{width:120px;height:80px}
+.ca-okc{width:46px;height:46px;border-radius:50%;background:var(--ca-green);display:grid;place-items:center;margin-top:4px;box-shadow:0 0 0 6px rgba(45,190,91,.18)}
+.ca-okc svg{width:24px;height:24px;stroke:#fff;stroke-width:3.4;fill:none}
+.ca-rdy{font-size:14.5px;color:var(--ca-txt);margin-top:6px;text-align:center}
+.ca-prev{width:100%;margin-top:18px;background:var(--ca-card);border-radius:var(--r-media);padding:10px;position:relative}
+.ca-prev img{display:block;width:100%;border-radius:12px}
+.ca-prev .tg{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ca-txt);padding:2px 4px 9px}
+.ca-prev .tg b{color:#fff;font-weight:600}
+.ca-proof{width:100%;margin-top:12px;background:var(--ca-card);border-radius:var(--r-ctl);padding:12px 14px;display:flex;align-items:center;gap:12px}
+.ca-proof .big{font-size:28px;font-weight:700;letter-spacing:-.02em}
+.ca-proof .st{color:#FFC93C;font-size:14px;letter-spacing:1px;line-height:1}
+.ca-proof .tx{font-size:12.5px;color:var(--ca-txt);line-height:1.35}
+.ca-proof .tx b{color:#fff;font-weight:600}
+
+/* paywall */
+.scr--pay .scr-top{position:absolute;left:0;right:0;top:0;padding:52px 16px 0;height:0;z-index:5}
+.ca-x{width:30px;height:30px;display:grid;place-items:center;color:rgba(255,255,255,.82)}
+.ca-x svg{width:18px;height:18px}
+.scr--pay .scr-body{padding:0}
+.ca-hero{position:relative;height:208px;overflow:hidden}
+.ca-hero img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}
+.ca-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,22,40,.25) 0%,rgba(10,22,40,0) 30%,rgba(10,22,40,0) 62%,var(--ca-bg1) 100%)}
+.ca-pin{padding:0 18px}
+.ca-ph{font-size:27px;line-height:1.14;font-weight:700;letter-spacing:-.022em;text-align:center;margin-top:-6px;position:relative}
+.ca-ph em{font-style:normal;color:var(--ca-sky)}
+.ca-psub{font-size:13.5px;line-height:1.4;color:var(--ca-txt);text-align:center;margin:7px 6px 0}
+.ca-feats{list-style:none;margin:14px 0 0 12px}
+.ca-feats li{display:flex;align-items:center;gap:11px;font-size:15px;line-height:1.25;font-weight:500;padding:4px 0}
+.ca-feats li .c{width:20px;height:20px;border-radius:50%;background:var(--ca-check);display:grid;place-items:center;flex:none}
+.ca-feats li .c svg{width:11px;height:11px;stroke:#fff;stroke-width:3.4;fill:none}
+.ca-plans{margin-top:14px;display:flex;flex-direction:column;gap:9px}
+.ca-plan{display:flex;align-items:center;gap:7px;width:100%;text-align:left;background:var(--ca-card);border:1.5px solid rgba(255,255,255,.06);border-radius:var(--r-ctl);padding:12px 12px 12px 14px;min-height:62px;position:relative}
+.ca-plan.on{border-color:var(--ca-sky);background:#121A27}
+.ca-plan .nm{flex:1;min-width:0}
+.ca-plan .nm b{display:block;font-size:15px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ca-plan .nm span{display:block;font-size:12.5px;color:var(--ca-muted);margin-top:1px}
+.ca-plan .nm span em{font-style:normal;color:var(--ca-sky);font-weight:600}
+.ca-badge{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--ca-blue);padding:4px 7px;border-radius:10px;white-space:nowrap;flex:none}
+.ca-badge.save{background:var(--ca-green)}
+.ca-plan .pr{font-size:14.5px;font-weight:500;color:#fff;white-space:nowrap}
+.ca-radio{width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(255,255,255,.3);flex:none;display:grid;place-items:center}
+.ca-plan.on .ca-radio{background:var(--ca-sky);border-color:var(--ca-sky)}
+.ca-radio svg{width:11px;height:11px;stroke:#fff;stroke-width:3.4;fill:none;display:none}
+.ca-plan.on .ca-radio svg{display:block}
+.ca-sec{display:flex;align-items:center;justify-content:center;gap:7px;font-size:12.5px;color:var(--ca-txt);margin-top:10px}
+.ca-sec .c{width:14px;height:14px;border-radius:50%;background:var(--ca-check);display:grid;place-items:center}
+.ca-sec .c svg{width:8px;height:8px;stroke:#fff;stroke-width:3.6;fill:none}
+.scr--pay .scr-foot{padding-top:12px;background:linear-gradient(180deg,rgba(9,25,28,0),var(--ca-bg3) 20%)}
+.ca-legal{display:flex;justify-content:space-between;padding:12px 10px 0;font-size:12px;color:var(--ca-muted)}
+
+/* offer sheet — trial timeline */
+.ca-dim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.scr--offer .scr-body{display:flex;flex-direction:column;justify-content:flex-end;padding:0;overflow:visible}
+.ca-sheet{background:#0F1724;border-radius:26px 26px 0 0;padding:10px 20px 24px;position:relative;border-top:1px solid rgba(255,255,255,.08)}
+.ca-grab{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.2);margin:0 auto 6px}
+.ca-sheet .ca-x{position:absolute;top:14px;right:14px}
+.ca-oh{font-size:25px;line-height:1.16;font-weight:700;letter-spacing:-.02em;text-align:center;margin-top:16px}
+.ca-osub{font-size:14px;line-height:1.42;color:var(--ca-txt);text-align:center;margin:8px 8px 0}
+.ca-tl{list-style:none;margin:20px 0 0;position:relative}
+.ca-tl::before{content:'';position:absolute;left:17px;top:20px;bottom:20px;width:2px;background:linear-gradient(180deg,var(--ca-sky),rgba(47,140,255,.15))}
+.ca-tl li{display:flex;gap:14px;padding:7px 0;position:relative}
+.ca-tl .ic{width:36px;height:36px;border-radius:50%;background:#16243A;border:2px solid var(--ca-sky);display:grid;place-items:center;flex:none;color:var(--ca-sky)}
+.ca-tl .ic svg{width:17px;height:17px}
+.ca-tl li:first-child .ic{background:var(--ca-sky);color:#fff}
+.ca-tl b{display:block;font-size:15px;font-weight:600;color:#fff;margin-top:1px}
+.ca-tl span{display:block;font-size:13px;color:var(--ca-txt);line-height:1.4;margin-top:1px}
+.ca-ofoot{margin-top:18px}
+.ca-no{display:block;width:100%;height:38px;margin-top:4px;font-size:14px;font-weight:500;color:var(--ca-muted)}
+
+/* home */
+.ca-hhd{display:flex;align-items:center;gap:10px}
+.ca-hhd h2{flex:1;white-space:nowrap;font-size:25px;font-weight:700;letter-spacing:-.02em}
+.ca-hb{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;color:#fff;font-weight:700}
+.ca-hb.gold{background:#E8B12C;color:#5A3A00}
+.ca-hb svg{width:18px;height:18px}
+.ca-mk{font-size:11.5px;font-weight:600;letter-spacing:.1em;color:var(--ca-muted);text-transform:uppercase;margin-top:14px}
+.ca-md{display:flex;justify-content:space-between;align-items:center}
+.ca-md b{font-size:31px;font-weight:700;letter-spacing:-.02em}
+.ca-yr{font-size:13px;font-weight:600;background:rgba(255,255,255,.08);padding:5px 10px;border-radius:12px}
+.ca-hcar{display:flex;justify-content:center;margin-top:6px}
+.ca-tag{font-size:13px;color:var(--ca-txt);text-align:center;margin-top:4px}
+.ca-start{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px}
+.ca-start svg{width:18px;height:18px}
+.ca-wh2{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 10px;font-size:17px;font-weight:600}
+.ca-wh2 span{font-size:13.5px;color:var(--ca-sky);font-weight:500}
+.ca-tabs{display:flex;justify-content:space-around;background:rgba(30,36,48,.92);border-radius:28px;padding:8px 6px;margin:0 4px}
+.ca-tabs div{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ca-txt);padding:4px 8px;border-radius:18px}
+.ca-tabs div.on{background:rgba(47,140,255,.18);color:var(--ca-sky)}
+.ca-tabs svg{width:20px;height:20px}
+
+/* light mode — an approximation: the app ships dark only in the frames we have */
+.phone-in.light{--ca-bg1:#EEF3FA;--ca-bg2:#F4F7FB;--ca-bg3:#EEF4F5;--ca-card:#FFFFFF;--ca-card2:#E9EEF5;--ca-line:rgba(14,23,38,.07);
+  --ca-ink:#0E1726;--ca-txt:#4E5A6A;--ca-muted:#7F8A99;background:var(--ca-bg2)}
+.phone-in.light .screenwrap{background:var(--ca-bg2)}
+.phone-in.light .ca-row,.phone-in.light .ca-use .tt b,.phone-in.light .ca-plan .nm b,.phone-in.light .ca-plan .pr,.phone-in.light .ca-ls li,
+.phone-in.light .ca-tl b,.phone-in.light .ca-prev .tg b,.phone-in.light .ca-proof .tx b,.phone-in.light .ca-step.cur,.phone-in.light .ca-step.done,
+.phone-in.light .ca-hb,.phone-in.light .ca-back{color:#0E1726}
+.phone-in.light .ca-back,.phone-in.light .ca-hb:not(.gold),.phone-in.light .ca-step.done,.phone-in.light .ca-yr{background:rgba(14,23,38,.07)}
+.phone-in.light .ca-step{border-color:rgba(14,23,38,.14)}
+.phone-in.light .ca-use.on,.phone-in.light .ca-plan.on{background:#EAF2FF}
+.phone-in.light .ca-row.on{background:#EAF2FF}
+.phone-in.light .ca-plan{border-color:rgba(14,23,38,.08)}
+.phone-in.light .ca-radio{border-color:rgba(14,23,38,.25)}
+.phone-in.light .ca-th{background:rgba(14,23,38,.04)}
+.phone-in.light .ca-sheet{background:#FFFFFF;border-top-color:rgba(14,23,38,.06)}
+.phone-in.light .ca-grab{background:rgba(14,23,38,.18)}
+.phone-in.light .ca-tl .ic{background:#EAF2FF}
+.phone-in.light .ca-tl li:first-child .ic{background:var(--ca-sky)}
+.phone-in.light .ca-x{color:rgba(14,23,38,.6)}
+.phone-in.light .scr--pay .ca-x{color:rgba(255,255,255,.85)}
+.phone-in.light .ca-dots i{background:rgba(14,23,38,.22)}
+.phone-in.light .ca-dots i.on{background:#0E1726}
+.phone-in.light .ca-tabs{background:rgba(255,255,255,.95);box-shadow:0 4px 18px rgba(14,23,38,.08)}
+.phone-in.light .ca-wimg::after{background:linear-gradient(180deg,rgba(244,247,251,0) 45%,var(--ca-bg2) 96%)}
+.phone-in.light .ca-hero::after{background:linear-gradient(180deg,rgba(10,22,40,.25) 0%,rgba(10,22,40,0) 30%,rgba(238,243,250,0) 62%,var(--ca-bg1) 100%)}
+.phone-in.light .ca-dial .trk{stroke:#D9E2EE}
+.phone-in.light .ca-dial .tk{stroke:rgba(38,119,247,.35)}
+.phone-in.light .ca-dial .face{fill:#E3ECF8}
+.phone-in.light .ca-nocar{color:var(--ca-blue)}
+
+/* prototype toolbar, walkthrough, QR */
+.tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:520px}
+.seg{display:inline-flex;align-items:center;background:var(--surf);border:1px solid var(--hair2);border-radius:20px;padding:3px;gap:2px}
+.seg button{padding:6px 11px;border-radius:16px;font:600 12px/1 'Inter',sans-serif;color:var(--ink2);transition:.14s}
+.seg button.on{background:var(--ink);color:#0B1626}
+.demo-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:20px;background:var(--accent);color:#fff;font:700 12px/1 'Inter',sans-serif}
+.demo-cap{width:390px;max-width:calc(100vw - 24px);background:var(--surf);border:1px solid var(--hair2);border-radius:16px;padding:14px 14px 12px;
+  display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.demo-cap .bar{position:absolute;left:0;top:0;right:0;height:3px;background:rgba(255,255,255,.08)}
+.demo-cap .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s linear}
+.demo-cap p{flex:1;font-size:13.5px;line-height:1.45;color:var(--ink);margin:0;font-weight:500}
+.demo-cap button{font:700 12px/1 'Inter',sans-serif;color:var(--ink2);padding:7px 10px;border-radius:12px;border:1px solid var(--hair2);flex:none}
+.finger{position:absolute;z-index:90;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.28);
+  border:2px solid rgba(255,255,255,.95);box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none;opacity:0;left:50%;top:60%;
+  transition:left .32s cubic-bezier(.4,0,.2,1),top .32s cubic-bezier(.4,0,.2,1),opacity .2s,transform .15s}
+.finger.show{opacity:1}
+.finger.press{transform:scale(.78);background:rgba(255,255,255,.45)}
+.qr{display:flex;align-items:center;gap:12px;background:var(--surf);border:1px solid var(--hair2);border-radius:16px;padding:10px 16px 10px 10px;text-align:left}
+.qr img{width:135px;height:135px;display:block;image-rendering:pixelated;border-radius:6px}
+.qr span{font-size:12.5px;line-height:1.45;color:var(--ink2)}
+.qr b{display:block;color:var(--ink);font-size:13.5px}
+@media(max-width:1080px){.qr{display:none}}
+#view-proto .tools{order:0} #view-proto .demo-cap{order:1} #view-proto .phone{order:2} #view-proto .chips{order:3}
+#view-proto .chiphint{order:4} #view-proto .qr{order:5}
+.cta-row .qr{order:2}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:470px;margin:0 auto}
+.chip{padding:7px 13px;border-radius:20px;border:1px solid var(--hair2);background:var(--surf);font:600 12px/1 'Inter',sans-serif;color:var(--ink2);transition:.14s}
+.chip:hover{color:var(--ink);border-color:rgba(214,226,245,.32)}
+.chip.offer{border-style:dashed;border-color:var(--accent-lift);color:var(--accent-lift)}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff;border-style:solid}
+.chiphint{text-align:center;font-size:11px;color:var(--ink3);margin:0;max-width:430px}
+
+/* on a phone: the prototype is the screen */
+@media(max-width:500px){
+  #view-proto .phonecol{padding:0 0 28px;gap:14px}
+  #view-proto .phone{width:100vw;height:calc(100svh - 58px);min-height:640px;border:0;border-radius:0;box-shadow:none;order:1}
+  #view-proto .phone-in{border-radius:0}
+  #view-proto .island,#view-proto .sbar,#view-proto .homebar{display:none}
+  #view-proto .scr-top{padding-top:14px}
+  #view-proto .scr--pay .scr-top{padding-top:12px}
+  #view-proto .scr-foot{padding-bottom:16px}
+  #view-proto .ca-wimg{height:470px}
+  #view-proto .ca-hero{height:170px}
+  #view-proto .scr--load .scr-body{padding-top:20px}
+  #view-proto .tools{order:3;padding:0 12px}
+  #view-proto .demo-cap{position:fixed;left:12px;right:12px;bottom:12px;width:auto;max-width:none;z-index:95}
+  #view-proto .chips{order:4;padding:0 12px}
+  #view-proto .chiphint{order:5}
+}
+
+/* ============ the short panel ============ */
+.pn{padding:30px 30px 60px}
+.pn-n{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink)}
+.pn-n.ctx{color:var(--panel-muted)}
+.pn-t{font-size:23px;line-height:1.18;font-weight:700;letter-spacing:-.028em;margin:8px 0 0;color:var(--panel-ink)}
+.pn-hyp{font-size:15px;line-height:1.62;color:#2E353B;margin:16px 0 0}
+.pn-hyp b{font-weight:700;color:var(--panel-ink)}
+.pn-out{margin-top:22px;border-top:1px solid var(--panel-line);padding-top:18px}
+.pn-out .lab{font-size:10px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--panel-muted)}
+.pn-out .v{font-size:31px;font-weight:700;letter-spacing:-.035em;color:var(--accent-ink);margin-top:7px;line-height:1}
+.pn-kept{margin-top:22px;font-size:12.5px;line-height:1.55;color:var(--panel-muted)}
+.pn-kept b{color:#2E353B;font-weight:700}
+.pn-foot{font-size:11.5px;line-height:1.55;color:var(--panel-muted);border-top:1px solid var(--panel-line);padding-top:14px;margin-top:26px}
+.pn-sep{height:1px;background:var(--panel-line);margin:26px 0}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-in">
+    <div class="nav-brand">
+      <img src="img/logo.png" alt="Car Auto Play">
+      <b>Growth Audit</b><span>· Car Auto Play</span>
+    </div>
+    <div class="nav-links">
+      <button class="on" data-view="over">Overview</button>
+      <button data-view="proto">Prototype</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= OVERVIEW ======================= -->
+<div class="view on" id="view-over">
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Growth Audit · November 2026</div>
+    <h1>Car Auto Play</h1>
+    <p class="lede">Five ideas to unlock more revenue from the traffic you already have.</p>
+    <div class="meta">Prepared by <b>Adapty</b> · based on your live iOS flow and your App Store listing</div>
+    <div class="herobtns"><button class="ghostbtn" data-demo><span class="pl"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg></span>Watch the 30-second walkthrough</button></div>
+    <div class="stats">
+      <div class="stat"><b>30,000+</b><span>apps run subscriptions<br>on Adapty</span></div>
+      <div class="stat"><b>5</b><span>ideas, each rebuilt<br>as a working screen</span></div>
+      <div class="stat"><b>0</b><span>design changes<br>to your art direction</span></div>
+    </div>
+    <div class="fb">
+      <div class="fb-k">Built in Adapty Flow Builder</div>
+      <div class="fb-i">
+        <span class="tick"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p><b>Millions of dollars</b> in subscription revenue pass through Flow Builder every month.</p>
+      </div>
+      <div class="fb-i">
+        <span class="tick"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <p><b>Nearly 500 apps</b> actively build their paywalls and onboarding in it — plenty of them past $100K MRR.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="wrap">
+    <div class="sec-k">What this is</div>
+    <h2>We opened Car Auto Play the way a new driver does, then rebuilt the parts we think are leaving money on the table.</h2>
+    <p class="body">Adapty powers subscriptions for <b>30,000+ apps</b>, so we see what moves conversion and revenue across the market, not inside one app. We pointed that at Car Auto Play. We installed it, went through the first screens up to the dashboard, read your App Store listing, and looked for gaps between what you already have and what you show people.</p>
+    <p class="body">What follows is five ideas, not fifteen. Each one is a hypothesis you can A/B test, and each one is built into a clickable prototype so you can see it rather than imagine it. <b>The prototype uses your design, not ours.</b></p>
+    <div class="notes">
+      <div class="note">
+        <h4>We did not redesign your app</h4>
+        <p>Every screen in the prototype is yours: the night-blue screens, the brand logo tiles, the Brand / Model / Year pills, the dial loader, the theme cards, the plan cards and your blue Continue button. Only the order changed, plus a few things you already have but do not show at the right moment.</p>
+      </div>
+      <div class="note">
+        <h4>You may have tested some of this</h4>
+        <p>We are working from the outside, so we cannot see your experiment history. If you have already run one of these, tell us and we will go deeper on the rest rather than repeat it.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rule"></div>
+
+<div class="sec">
+  <div class="wrap">
+    <div class="sec-k">The five ideas</div>
+    <h2>Ranked by what we would test first.</h2>
+    <p class="body">Each one links straight to the screen in the prototype.</p>
+
+    <div class="ideas">
+      <button class="idea" data-jump="offer">
+        <span class="no">01</span>
+        <span>
+          <h3>Offer the free trial when they close the paywall</h3>
+          <p>Close the paywall today and the same 7,99 € weekly and 34,99 € yearly prices come back twice more, after the theme picker and again from the home screen. Your Pro plan lists a free trial on the App Store. None of the three paywalls offers it.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>ARPU +10–15%</b><span>second chance</span></span>
+      </button>
+
+      <button class="idea" data-jump="use">
+        <span class="no">02</span>
+        <span>
+          <h3>Ask what they want before the price</h3>
+          <p>“What would you like to do?” and “Choose your theme” come after the paywall, so the paywall has to sell to everyone at once. Ask them first, then let the loader build the dashboard they just picked.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +10–15%</b><span>to purchase</span></span>
+      </button>
+
+      <button class="idea" data-jump="paywall">
+        <span class="no">03</span>
+        <span>
+          <h3>Sell the screen they said they have</h3>
+          <p>“Unlock Full Access for Your Touareg” already names their car, which is a strong start. The first bullet still sells a CarPlay connection to every driver, including someone whose car has no screen. Lead with their use case and show the theme they chose.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +10–15%</b><span>to purchase</span></span>
+      </button>
+
+      <button class="idea" data-jump="paywall">
+        <span class="no">04</span>
+        <span>
+          <h3>Lead with yearly and show what it saves</h3>
+          <p>Weekly at 7,99 € is pre-selected. Over a year that comes to 415,48 €, against 34,99 € for Yearly, which is 91% less. Today the yearly card only says “just 0,67 € per week”, below the weekly one.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>ARPU +10–15%</b><span>annual mix</span></span>
+      </button>
+
+      <button class="idea" data-jump="ready">
+        <span class="no">05</span>
+        <span>
+          <h3>Put your 4.5 stars where they decide</h3>
+          <p>7.6K people rate you 4.5 on the US App Store. That rating appears nowhere between the first screen and the price.</p>
+          <span class="seeit">See the screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </span>
+        <span class="out"><b>CR +10–15%</b><span>to purchase</span></span>
+      </button>
+    </div>
+
+    <div class="band">
+      <div class="txt">
+        <div class="lab">Potential outcome</div>
+        <p>Run together, these five work on the same funnel at three points: what you ask before the price, what the paywall says and how it frames the two plans, and what happens when someone says no.</p>
+      </div>
+      <div class="nums">
+        <div><b>+25%</b><span>CR to purchase</span></div>
+        <div><b>+30%</b><span>ARPU</span></div>
+      </div>
+    </div>
+
+    <div class="cta-row">
+      <div class="qr"><img src="img/qr.svg?v=1" alt="QR code for the prototype"><span><b>Open it on your phone</b>Scan to try the flow in your hand.</span></div>
+      <button class="bigbtn" data-view="proto">Open the prototype
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="foot">
+  <div class="wrap">
+    Impact ranges are Adapty's expected effect from teardowns and A/B tests across subscription apps — not measured lift for Car Auto Play. Every price, rating and feature line here and in the prototype comes from Car Auto Play's own App Store listing and in-app screens. Prices are shown in euros, as they appear in the app.
+  </div>
+</div>
+</div><!-- /view-over -->
+
+<!-- ======================= PROTOTYPE ======================= -->
+<div class="view" id="view-proto">
+<div class="stage">
+  <div class="phonecol">
+    <div class="tools" id="tools">
+      <div class="seg" id="segLang"><button data-lang="en" class="on">EN</button><button data-lang="pt">PT</button><button data-lang="de">DE</button></div>
+      <div class="seg" id="segTheme"><button data-theme="light">Light</button><button data-theme="dark" class="on">Dark</button></div>
+      <button class="demo-btn" id="demoBtn"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg>30-sec walkthrough</button>
+    </div>
+    <div class="phone">
+      <div class="phone-in" id="phoneIn">
+        <div class="island"></div>
+        <div class="sbar" id="sbar">
+          <span>9:41</span>
+          <span class="glyphs">
+            <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.5" y="5.5" width="3" height="5.5" rx="1"/><rect x="9" y="3" width="3" height="8" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+            <svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 10.5 5.6 7.9a3.4 3.4 0 0 1 4.8 0L8 10.5Zm0-5.6a6.4 6.4 0 0 0-4.5 1.9L1.7 4.9a9 9 0 0 1 12.6 0l-1.8 1.9A6.4 6.4 0 0 0 8 4.9Z"/></svg>
+            <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".6" y=".6" width="20" height="10.8" rx="3" stroke="currentColor" stroke-opacity=".5"/><rect x="2.2" y="2.2" width="16.5" height="7.6" rx="1.8" fill="currentColor"/><path d="M22.3 4.1v3.8a2 2 0 0 0 0-3.8Z" fill="currentColor" fill-opacity=".5"/></svg>
+          </span>
+        </div>
+        <div class="homebar" id="homebar"></div>
+        <div class="finger" id="finger"></div>
+        <div class="screenwrap">
+
+<!-- WELCOME: their three-slide carousel -->
+<section class="scr scr--wel" data-id="welcome" data-photo="1">
+  <div class="ca-wimg" id="welImgs"><img src="img/intro1.jpg" alt="" class="on"><img src="img/intro2.jpg" alt=""><img src="img/intro3.jpg" alt=""></div>
+  <div class="scr-top"></div>
+  <div class="scr-body">
+    <h1 class="ca-wh" id="welH"></h1>
+    <p class="ca-ws" id="welS"></p>
+  </div>
+  <div class="scr-foot">
+    <button class="ca-btn" id="welBtn" data-t="cont"></button>
+    <div class="ca-dots" id="welDots"><i class="on"></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- BRAND -->
+<section class="scr" data-id="brand">
+  <div class="scr-top">
+    <div class="ca-nav"><button class="ca-back ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ca-skip" data-skip="use" data-t="skip"></button></div>
+    <h1 class="ca-h" data-t="car.h"></h1>
+    <p class="ca-sub" data-t="car.sub"></p>
+    <div class="ca-steps" data-steps="brand"></div>
+  </div>
+  <div class="scr-body">
+    <div class="ca-lab" data-t="popular"></div>
+    <div class="ca-list" id="brandList"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot">
+    <div class="ca-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-t="s.brand"></span></div>
+    <div class="ca-dots"><i class="on"></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- MODEL -->
+<section class="scr" data-id="model">
+  <div class="scr-top">
+    <div class="ca-nav"><button class="ca-back" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ca-skip" data-skip="use" data-t="skip"></button></div>
+    <h1 class="ca-h" data-t="car.h"></h1>
+    <p class="ca-sub" id="modelSub"></p>
+    <div class="ca-steps" data-steps="model"></div>
+  </div>
+  <div class="scr-body">
+    <div style="height:14px"></div>
+    <div class="ca-list" id="modelList"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot">
+    <div class="ca-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span data-t="s.model"></span></div>
+    <div class="ca-dots"><i></i><i class="on"></i><i></i></div>
+  </div>
+</section>
+
+<!-- YEAR -->
+<section class="scr" data-id="year">
+  <div class="scr-top">
+    <div class="ca-nav"><button class="ca-back" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ca-skip" data-skip="use" data-t="skip"></button></div>
+    <h1 class="ca-h" data-t="car.h"></h1>
+    <p class="ca-sub" id="yearSub"></p>
+    <div class="ca-steps" data-steps="year"></div>
+  </div>
+  <div class="scr-body">
+    <div style="height:14px"></div>
+    <div class="ca-list" id="yearList"></div>
+    <div style="height:10px"></div>
+  </div>
+  <div class="scr-foot">
+    <div class="ca-dots"><i></i><i></i><i class="on"></i></div>
+  </div>
+</section>
+
+<!-- USE CASE: moved ahead of the paywall -->
+<section class="scr" data-id="use">
+  <div class="scr-top">
+    <div class="ca-nav"><button class="ca-back" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ca-skip" data-skip="theme" data-t="skip2"></button></div>
+    <h1 class="ca-h" data-t="use.h"></h1>
+    <p class="ca-sub" data-t="use.sub"></p>
+  </div>
+  <div class="scr-body" id="useList"></div>
+  <div class="scr-foot"></div>
+</section>
+
+<!-- THEME: moved ahead of the paywall -->
+<section class="scr" data-id="theme">
+  <div class="scr-top">
+    <div class="ca-nav"><button class="ca-back" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><button class="ca-skip" data-skip="loader" data-t="skip2"></button></div>
+    <h1 class="ca-h" data-t="th.h"></h1>
+    <p class="ca-sub" data-t="th.sub"></p>
+  </div>
+  <div class="scr-body"><div class="ca-themes" id="themeList"></div></div>
+  <div class="scr-foot"><button class="ca-btn" data-go="loader" data-t="cont"></button></div>
+</section>
+
+<!-- LOADER: their dial, now reading back every answer -->
+<section class="scr scr--load" data-id="loader">
+  <div class="scr-top"></div>
+  <div class="scr-body">
+    <div class="ca-dial"><svg viewBox="0 0 250 250" id="dial"></svg><div class="pct" id="pct">0%</div></div>
+    <div class="ca-car" id="loadCar"></div>
+    <div class="ca-lsub" data-t="ld.sub"></div>
+    <ul class="ca-ls" id="loadSteps">
+      <li><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t"></span></li>
+      <li><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t"></span></li>
+      <li><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t"></span></li>
+      <li><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span class="t"></span></li>
+    </ul>
+  </div>
+  <div class="scr-foot"></div>
+</section>
+
+<!-- READY: their "dashboard is ready", plus the dashboard itself and their rating -->
+<section class="scr scr--ready" data-id="ready">
+  <div class="scr-top"></div>
+  <div class="scr-body">
+    <img class="ca-carimg" id="readyCar" src="img/car.png" alt="">
+    <div class="ca-nocar hidden" id="readyNoCar"><svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M14 52V40l12-18h68l12 18v12H14Z"/><circle cx="34" cy="56" r="8"/><circle cx="86" cy="56" r="8"/><path d="M30 34h60"/></svg></div>
+    <div class="ca-okc"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <div class="ca-car" id="readyCarName" style="margin-top:12px"></div>
+    <div class="ca-rdy" data-t="rd.ok"></div>
+    <div class="ca-prev"><div class="tg"><span id="prevMode"></span><b id="prevTheme"></b></div><img id="prevImg" src="img/th-blue.jpg" alt=""></div>
+    <div class="ca-proof">
+      <div class="big">4.5</div>
+      <div><div class="st">★★★★★</div><div class="tx" data-th="rd.proof"></div></div>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+  <div class="scr-foot"><button class="ca-btn" data-go="paywall" data-t="cont"></button></div>
+</section>
+
+<!-- PAYWALL -->
+<section class="scr scr--pay" data-id="paywall" data-photo="1">
+  <div class="scr-top"><button class="ca-x" id="payClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="scr-body">
+    <div class="ca-hero"><img id="payHero" src="img/pay-car.jpg" alt=""></div>
+    <div class="ca-pin">
+      <h1 class="ca-ph" id="payH"></h1>
+      <p class="ca-psub" id="paySub"></p>
+      <ul class="ca-feats" id="payFeats"></ul>
+      <div class="ca-plans" id="planList">
+        <button class="ca-plan" data-v="year"><span class="nm"><b data-t="pw.year"></b><span data-th="pw.yearS"></span></span><span class="ca-badge save" data-t="pw.save"></span><span class="pr">34,99 €</span><span class="ca-radio"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></button>
+        <button class="ca-plan" data-v="week"><span class="nm"><b data-t="pw.week"></b></span><span class="ca-badge" data-t="pw.pop"></span><span class="pr">7,99 €</span><span class="ca-radio"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span></button>
+      </div>
+      <div class="ca-sec"><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span data-t="pw.sec"></span></div>
+      <div style="height:6px"></div>
+    </div>
+  </div>
+  <div class="scr-foot">
+    <button class="ca-btn" id="payCta" data-t="cont"></button>
+    <div class="ca-legal"><span data-t="lg.terms"></span><span data-t="lg.rest"></span><span data-t="lg.priv"></span></div>
+  </div>
+</section>
+
+<!-- OFFER ON CLOSE: trial timeline on the same yearly plan -->
+<section class="scr scr--offer sheet" data-id="offer">
+  <div class="ca-dim"></div>
+  <div class="scr-top" style="padding:0"></div>
+  <div class="scr-body">
+    <div class="ca-sheet">
+      <div class="ca-grab"></div>
+      <button class="ca-x" id="offClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+      <h2 class="ca-oh" data-t="of.h"></h2>
+      <p class="ca-osub" id="offSub"></p>
+      <ul class="ca-tl">
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg></span><div><b data-t="of.t1"></b><span data-t="of.d1"></span></div></li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z"/><path d="M12 7v5l3 2"/></svg></span><div><b data-t="of.t2"></b><span data-t="of.d2"></span></div></li>
+        <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><b data-t="of.t3"></b><span data-th="of.d3"></span></div></li>
+      </ul>
+      <div class="ca-ofoot">
+        <button class="ca-btn" id="offerCta" data-t="of.cta"></button>
+        <div class="ca-sec"><span class="c"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><span data-t="pw.sec"></span></div>
+        <button class="ca-no" id="offNo" data-t="of.no"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOME -->
+<section class="scr" data-id="home">
+  <div class="scr-top">
+    <div class="ca-hhd"><h2>Car Dashboard</h2><span class="ca-hb gold">♛</span><span class="ca-hb">?</span><span class="ca-hb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></span></div>
+  </div>
+  <div class="scr-body">
+    <div class="ca-mk" id="homeMake"></div>
+    <div class="ca-md"><b id="homeModel"></b><span class="ca-yr" id="homeYear"></span></div>
+    <div class="ca-hcar"><img class="ca-carimg" id="homeCar" src="img/car.png" alt="" style="width:270px"></div>
+    <div class="ca-tag" data-t="hm.tag"></div>
+    <button class="ca-btn ca-start"><span data-t="hm.start"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    <div class="ca-wh2"><span style="color:inherit;font-size:17px;font-weight:600" data-t="hm.theme"></span><span data-t="hm.change"></span></div>
+    <div class="ca-prev" style="margin-top:0"><img id="homeTheme" src="img/th-blue.jpg" alt=""></div>
+    <div style="height:12px"></div>
+  </div>
+  <div class="scr-foot" style="padding-bottom:22px">
+    <div class="ca-tabs">
+      <div class="on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 3 10.5V21h6v-6h6v6h6V10.5z"/></svg><span data-t="tb.home"></span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/><path d="M3.5 10.5h6M14.5 10.5h6M12 14.5V21"/></svg><span data-t="tb.drive"></span></div>
+      <div><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span data-t="tb.wid"></span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M7 14h4"/></svg><span data-t="tb.gar"></span></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 9v6M11 9v6M14 9v6M17 9v6"/></svg><span>VIN</span></div>
+    </div>
+  </div>
+</section>
+
+        </div>
+      </div>
+    </div>
+    <div class="demo-cap hidden" id="demoCap"><div class="bar"><i id="demoProg"></i></div><p id="demoTxt"></p><button id="demoStop">Stop</button></div>
+    <div class="chips" id="chips"></div>
+    <p class="chiphint">Jump to any screen — answers already filled in.</p>
+    <div class="qr"><img src="img/qr.svg?v=1" alt="QR code for this prototype"><span><b>Open it on your phone</b>Scan to try the flow in your hand.</span></div>
+  </div>
+  <div class="panelcol"><div class="pn" id="panel"></div></div>
+</div>
+</div><!-- /view-proto -->
+
+<script>
+/* ================= copy, per language (phone screens only) ================= */
+var LANGS=['en','pt','de'];
+var T={
+ 'cont':   ['Continue','Continuar','Weiter'],
+ 'skip':   ['Skip setup','Pular configuração','Einrichtung überspringen'],
+ 'skip2':  ['Skip this step','Pular esta etapa','Schritt überspringen'],
+ 'car.h':  ['Which car do you drive?','Qual carro você dirige?','Welches Auto fährst du?'],
+ 'car.sub':["We'll personalize your dashboard for your car.",'Vamos personalizar seu painel para o seu carro.','Wir passen dein Dashboard an dein Auto an.'],
+ 'popular':['Popular','Populares','Beliebt'],
+ 'st.brand':['Brand','Marca','Marke'], 'st.model':['Model','Modelo','Modell'], 'st.year':['Year','Ano','Jahr'],
+ 's.brand':['Search brands','Buscar marcas','Marken suchen'],
+ 's.model':['Search models','Buscar modelos','Modelle suchen'],
+ 'mod.sub':['Which {b} model is it?','Qual modelo {b}?','Welches {b}-Modell ist es?'],
+ 'yr.sub': ['What year is your {m}?','De que ano é o seu {m}?','Welches Baujahr hat dein {m}?'],
+ 'use.h':  ['What would you like to do?','O que você gostaria de fazer?','Was möchtest du tun?'],
+ 'use.sub':['Your answer helps us personalize the app for you.','Sua resposta nos ajuda a personalizar o app.','Deine Antwort hilft uns, die App anzupassen.'],
+ 'th.h':   ['Choose Your Theme','Escolha seu tema','Wähle dein Design'],
+ 'th.sub': ['Pick the look you like. You can change it later.','Escolha o visual. Você pode mudar depois.','Wähle deinen Look. Du kannst ihn später ändern.'],
+ 'ld.sub': ['Personalizing your dashboard…','Personalizando seu painel…','Dein Dashboard wird angepasst…'],
+ 'ld.1':   ['Found your {m} profile','Perfil do seu {m} encontrado','Profil für deinen {m} gefunden'],
+ 'ld.2':   ['Dashboard built in your {t} theme','Painel criado no tema {t}','Dashboard im Design {t} erstellt'],
+ 'ld.3c':  ["Widgets ready for your car's screen",'Widgets prontos para a tela do carro','Widgets für dein Autodisplay bereit'],
+ 'ld.3p':  ['Maps, music and weather ready on your phone','Mapas, música e clima prontos no celular','Karten, Musik und Wetter auf dem Handy bereit'],
+ 'ld.4':   ['Added to your garage','Adicionado à sua garagem','Zu deiner Garage hinzugefügt'],
+ 'rd.ok':  ['Your car dashboard is ready!','Seu painel está pronto!','Dein Auto-Dashboard ist fertig!'],
+ 'rd.c':   ["On your car's screen",'Na tela do carro','Auf deinem Autodisplay'],
+ 'rd.p':   ['On your phone, on the dash','No celular, no painel','Auf dem Handy, am Armaturenbrett'],
+ 'rd.th':  ['{t} theme','Tema {t}','Design {t}'],
+ 'rd.proof':['<b>7.6K ratings</b> on the App Store','<b>7,6 mil avaliações</b> na App Store','<b>7.600 Bewertungen</b> im App Store'],
+ 'pw.h':   ['Unlock Full Access<br>for Your <em>{m}</em>','Acesso total<br>para o seu <em>{m}</em>','Voller Zugriff<br>für deinen <em>{m}</em>'],
+ 'pw.subC':["Your {t} theme and widgets, on your car's screen.",'Seu tema {t} e widgets na tela do carro.','Dein Design {t} und Widgets auf deinem Autodisplay.'],
+ 'pw.subP':['Your phone becomes the dashboard, in your {t} theme.','Seu celular vira o painel, no tema {t}.','Dein Handy wird zum Dashboard, im Design {t}.'],
+ 'f.carplay':['Fast & easy CarPlay connection','Conexão CarPlay rápida e fácil','Schnelle CarPlay-Verbindung'],
+ 'f.widgets':['Custom widgets on your car screen','Widgets personalizados na tela do carro','Eigene Widgets auf dem Autodisplay'],
+ 'f.maps':  ['Maps, music and weather on one screen','Mapas, música e clima em uma tela','Karten, Musik und Wetter auf einem Screen'],
+ 'f.mount': ['Mount it on the dash and go','Prenda no painel e pronto','Am Armaturenbrett befestigen und los'],
+ 'f.garage':['All your cars in one garage','Todos os seus carros em uma garagem','Alle deine Autos in einer Garage'],
+ 'f.vin':   ['Instant VIN check for any car','Consulta de VIN para qualquer carro','Sofortiger VIN-Check für jedes Auto'],
+ 'pw.year': ['Yearly Access','Acesso anual','Jahreszugang'],
+ 'pw.yearS':['just <em>0,67 € per week</em>','só <em>0,67 € por semana</em>','nur <em>0,67 €/Woche</em>'],
+ 'pw.save': ['Save 91%','Economize 91%','91 % sparen'],
+ 'pw.week': ['Weekly Access','Acesso semanal','Wochenzugang'],
+ 'pw.pop':  ['Most popular','Mais popular','Beliebt'],
+ 'pw.sec':  ['Secured by Apple · Cancel anytime','Protegido pela Apple · Cancele quando quiser','Gesichert durch Apple · Jederzeit kündbar'],
+ 'lg.terms':['Terms','Termos','AGB'], 'lg.rest':['Restore','Restaurar','Wiederherstellen'], 'lg.priv':['Privacy','Privacidade','Datenschutz'],
+ 'of.h':   ['Try it free first','Experimente grátis primeiro','Erst kostenlos testen'],
+ 'of.sub': ['Your {m} dashboard, unlocked today. Pay nothing during the free trial.','O painel do seu {m}, liberado hoje. Não pague nada durante o teste grátis.','Dein {m}-Dashboard, heute freigeschaltet. Im Gratis-Test zahlst du nichts.'],
+ 'of.t1':  ['Today','Hoje','Heute'],
+ 'of.d1':  ['Everything unlocked: widgets, themes, garage and VIN check.','Tudo liberado: widgets, temas, garagem e VIN.','Alles freigeschaltet: Widgets, Designs, Garage und VIN-Check.'],
+ 'of.t2':  ['During the trial','Durante o teste','Während des Tests'],
+ 'of.d2':  ['Cancel in Settings and you pay nothing.','Cancele nos Ajustes e não pague nada.','In den Einstellungen kündigen und nichts zahlen.'],
+ 'of.t3':  ['When the trial ends','Quando o teste acabar','Wenn der Test endet'],
+ 'of.d3':  ['34,99 € a year — just 0,67 € per week.','34,99 € por ano — só 0,67 € por semana.','34,99 € pro Jahr — nur 0,67 € pro Woche.'],
+ 'of.cta': ['Start free trial','Começar teste grátis','Gratis-Test starten'],
+ 'of.no':  ['No thanks','Não, obrigado','Nein, danke'],
+ 'hm.tag': ['Maps, music and calls on one big screen made for the road.','Mapas, música e chamadas em uma tela grande feita para a estrada.','Karten, Musik und Anrufe auf einem großen Screen für die Straße.'],
+ 'hm.start':['Start Driving','Começar a dirigir','Losfahren'],
+ 'hm.theme':['Your theme','Seu tema','Dein Design'],
+ 'hm.change':['Change ›','Alterar ›','Ändern ›'],
+ 'tb.home':['Home','Início','Start'], 'tb.drive':['Drive','Dirigir','Fahren'], 'tb.wid':['Widgets','Widgets','Widgets'], 'tb.gar':['Garage','Garagem','Garage']
+};
+var SLIDES=[
+ {h:['Fast and Easy<br>CarPlay Connection','Conexão CarPlay<br>rápida e fácil','Schnelle und einfache<br>CarPlay-Verbindung'],
+  s:['Navigation, music, calls and weather, all in one place.','Navegação, música, chamadas e clima, tudo em um só lugar.','Navigation, Musik, Anrufe und Wetter an einem Ort.']},
+ {h:['Personalize Your<br>Car Dashboard','Personalize o<br>painel do seu carro','Personalisiere dein<br>Auto-Dashboard'],
+  s:['Add your car, choose a theme, and put widgets on your car screen.','Adicione seu carro, escolha um tema e coloque widgets na tela.','Füge dein Auto hinzu, wähle ein Design und platziere Widgets.']},
+ {h:['Instant VIN Check<br>for Any Car','Consulta de VIN<br>para qualquer carro','Sofortiger VIN-Check<br>für jedes Auto'],
+  s:['Enter a VIN to see safety recalls, crash-test ratings and full specs.','Digite um VIN para ver recalls, testes de colisão e ficha técnica.','Gib eine VIN ein für Rückrufe, Crashtest-Werte und alle Daten.']}
+];
+var USES={
+ connect:{t:['Connect to car','Conectar ao carro','Mit dem Auto verbinden'], s:['For cars with a built-in screen','Para carros com tela integrada','Für Autos mit eingebautem Display'],
+   l:[["Widgets on your car's screen",'Widgets na tela do carro','Widgets auf dem Autodisplay'],['Step-by-step connection guide','Guia de conexão passo a passo','Schritt-für-Schritt-Anleitung']],
+   ic:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 11l1.6-4.4A2 2 0 0 1 8.5 5h7a2 2 0 0 1 1.9 1.6L19 11a2 2 0 0 1 2 2v4a1 1 0 0 1-1 1h-1v1a1 1 0 0 1-2 0v-1H7v1a1 1 0 0 1-2 0v-1H4a1 1 0 0 1-1-1v-4a2 2 0 0 1 2-2Zm2.2 0h9.6l-1.2-3.4a.5.5 0 0 0-.5-.3H8.9a.5.5 0 0 0-.5.3ZM6.5 15a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Zm11 0a1.2 1.2 0 1 0 0-2.4 1.2 1.2 0 0 0 0 2.4Z"/></svg>',
+   f:['f.carplay','f.widgets','f.garage','f.vin']},
+ phone:{t:['Use phone as dashboard','Usar o celular como painel','Handy als Dashboard nutzen'], s:['For cars without a screen','Para carros sem tela','Für Autos ohne Display'],
+   l:[['Maps, music and weather','Mapas, música e clima','Karten, Musik und Wetter'],['Mount it on the dash and go','Prenda no painel e pronto','Am Armaturenbrett befestigen und los']],
+   ic:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm0 3v13h8V5Zm3 15a1 1 0 1 0 2 0 1 1 0 0 0-2 0Z"/></svg>',
+   f:['f.maps','f.mount','f.garage','f.vin']}
+};
+var THEMES=[
+ {k:'blue',  img:'img/th-blue.jpg',  n:['Blue','Azul','Blau']},
+ {k:'sunset',img:'img/th-sunset.jpg',n:['Sunset','Pôr do sol','Sunset']},
+ {k:'dusk',  img:'img/th-dusk.jpg',  n:['Dusk','Crepúsculo','Dämmerung']},
+ {k:'flame', img:'img/th-flame.jpg', n:['Flame','Chama','Flamme']}
+];
+var THK={}; THEMES.forEach(function(x){ THK[x.k]=x; });
+var BRANDS=[
+ {k:'Toyota',img:'img/b-toyota.png',m:['C-HR','Camry','Corolla','Hilux','Land Cruiser','Prius','RAV4','Yaris']},
+ {k:'Renault',img:'img/b-renault.png',m:['Arkana','Austral','Captur','Clio','Megane','Scenic','Zoe']},
+ {k:'Volkswagen',img:'img/b-vw.png',m:['Amarok','Arteon','Atlas','Golf','ID.4','Passat','Polo','T-Roc','Tiguan','Touareg','Touran']},
+ {k:'SEAT',img:'img/b-seat.png',m:['Arona','Ateca','Ibiza','Leon','Tarraco']},
+ {k:'Peugeot',img:'img/b-peugeot.png',m:['208','2008','308','3008','5008']},
+ {k:'Hyundai',img:'img/b-hyundai.png',m:['i10','i20','i30','Kona','Santa Fe','Tucson']},
+ {k:'Dacia',img:'img/b-dacia.png',m:['Duster','Jogger','Sandero','Spring']},
+ {k:'Kia',img:'img/b-kia.png',m:['Ceed','Niro','Picanto','Sorento','Sportage']}
+];
+var BK={}; BRANDS.forEach(function(b){ BK[b.k]=b; });
+
+/* ================= state ================= */
+var S0={lang:'en',theme:'dark'};
+function defaults(){ return {lang:S0.lang,theme:S0.theme,brand:'Volkswagen',model:'Touareg',year:2020,use:'connect',look:'blue',plan:'year',slide:0}; }
+var S=defaults();
+function L(){ return LANGS.indexOf(S.lang); }
+function t(k,v){ var s=(T[k]||[k])[L()]; if(v) Object.keys(v).forEach(function(x){ s=s.split('{'+x+'}').join(v[x]); }); return s; }
+function isTouareg(){ return S.brand==='Volkswagen' && S.model==='Touareg'; }
+var CK='<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+
+/* ================= dial ================= */
+(function(){
+  var h='<defs><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+   +'<radialGradient id="face" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0E2A55"/><stop offset=".8" stop-color="#0A1D3C"/><stop offset="1" stop-color="#0B2350"/></radialGradient></defs>'
+   +'<circle class="face" cx="125" cy="125" r="100" fill="url(#face)"/>';
+  for(var i=0;i<60;i++){ var a=i/60*Math.PI*2, r1=i%5?88:82, r2=96;
+    h+='<line class="tk" x1="'+(125+r1*Math.sin(a)).toFixed(1)+'" y1="'+(125-r1*Math.cos(a)).toFixed(1)+'" x2="'+(125+r2*Math.sin(a)).toFixed(1)+'" y2="'+(125-r2*Math.cos(a)).toFixed(1)+'" stroke="rgba(90,170,255,'+(i%5?.35:.7)+')" stroke-width="'+(i%5?1.4:2.2)+'" stroke-linecap="round"/>'; }
+  h+='<circle class="trk" cx="125" cy="125" r="114" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="7"/>'
+   +'<circle id="arc" cx="125" cy="125" r="114" fill="none" stroke="#2F8CFF" stroke-width="7" stroke-linecap="round" transform="rotate(-90 125 125)" filter="url(#glow)" stroke-dasharray="0 717"/>';
+  document.getElementById('dial').innerHTML=h;
+})();
+function setDial(p){ var C=2*Math.PI*114; document.getElementById('arc').setAttribute('stroke-dasharray',(C*p/100).toFixed(1)+' '+C.toFixed(1)); document.getElementById('pct').textContent=Math.round(p)+'%'; }
+
+/* ================= builders (re-run on language change) ================= */
+function buildBrands(){ var g=document.getElementById('brandList'); g.innerHTML='';
+  BRANDS.forEach(function(b){ var el=document.createElement('button'); el.className='ca-row'; el.dataset.v=b.k;
+    el.innerHTML='<img src="'+b.img+'" alt="">'+b.k+'<span class="ck">'+CK+'</span>';
+    el.addEventListener('click',function(){ if(S.brand!==b.k){ S.brand=b.k; S.model=b.m[Math.floor(b.m.length/2)]; } syncScreen(); buildModels(); setTimeout(function(){ go('model'); },180); });
+    g.appendChild(el); }); }
+function buildModels(){ var g=document.getElementById('modelList'); g.innerHTML='';
+  BK[S.brand].m.forEach(function(m){ var el=document.createElement('button'); el.className='ca-row'; el.dataset.v=m;
+    el.innerHTML=m+'<span class="ck">'+CK+'</span>';
+    el.addEventListener('click',function(){ S.model=m; syncScreen(); setTimeout(function(){ go('year'); },180); });
+    g.appendChild(el); }); syncScreen(); }
+function buildYears(){ var g=document.getElementById('yearList'); g.innerHTML='';
+  for(var y=2026;y>=2012;y--){ (function(y){ var el=document.createElement('button'); el.className='ca-row'; el.dataset.v=y;
+    el.innerHTML=y+'<span class="ck">'+CK+'</span>';
+    el.addEventListener('click',function(){ S.year=y; syncScreen(); setTimeout(function(){ go('use'); },180); });
+    g.appendChild(el); })(y); } }
+function buildUses(){ var g=document.getElementById('useList'); g.innerHTML='<div style="height:6px"></div>'; var li=L();
+  ['connect','phone'].forEach(function(k){ var u=USES[k], el=document.createElement('button'); el.className='ca-use'; el.dataset.v=k;
+    el.innerHTML='<div class="hd"><span class="ic">'+u.ic+'</span><span class="tt"><b>'+u.t[li]+'</b><span>'+u.s[li]+'</span></span><span class="ch"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span></div>'
+      +'<ul>'+u.l.map(function(x){ return '<li><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>'+x[li]+'</li>'; }).join('')+'</ul>';
+    el.addEventListener('click',function(){ S.use=k; syncScreen(); setTimeout(function(){ go('theme'); },220); });
+    g.appendChild(el); }); }
+function buildThemes(){ var g=document.getElementById('themeList'); g.innerHTML=''; var li=L();
+  THEMES.forEach(function(x){ var el=document.createElement('button'); el.className='ca-th'; el.dataset.v=x.k;
+    el.innerHTML='<img src="'+x.img+'" alt=""><span class="ck">'+CK+'</span><span class="nm">'+x.n[li]+'</span>';
+    el.addEventListener('click',function(){ S.look=x.k; syncScreen(); });
+    g.appendChild(el); }); }
+function applyStatic(){
+  document.documentElement.lang=S.lang;
+  document.querySelectorAll('[data-t]').forEach(function(el){ el.textContent=t(el.dataset.t); });
+  document.querySelectorAll('[data-th]').forEach(function(el){ el.innerHTML=t(el.dataset.th); });
+  buildBrands(); buildModels(); buildYears(); buildUses(); buildThemes();
+}
+
+/* ================= everything downstream reads S ================= */
+function syncScreen(){
+  var li=L(), th=THK[S.look], tn=th.n[li], car=S.year+' '+S.brand+' '+S.model;
+  /* welcome */
+  var sl=SLIDES[S.slide]; document.getElementById('welH').innerHTML=sl.h[li]; document.getElementById('welS').textContent=sl.s[li];
+  document.querySelectorAll('#welImgs img').forEach(function(im,i){ im.classList.toggle('on',i===S.slide); });
+  document.querySelectorAll('#welDots i').forEach(function(d,i){ d.classList.toggle('on',i===S.slide); });
+  /* brand/model/year pills */
+  document.querySelectorAll('[data-steps]').forEach(function(box){ var at=box.dataset.steps, h='';
+    var order=['brand','model','year'], vals={brand:S.brand,model:S.model,year:S.year};
+    order.forEach(function(k,i){ var past=order.indexOf(at)>i;
+      if(past) h+='<span class="ca-step done">'+vals[k]+' <i>✕</i></span>';
+      else h+='<span class="ca-step'+(k===at?' cur':'')+'">'+t('st.'+k)+'</span>'; });
+    box.innerHTML=h; });
+  document.querySelectorAll('#brandList .ca-row').forEach(function(b){ b.classList.toggle('on',b.dataset.v===S.brand); });
+  document.querySelectorAll('#modelList .ca-row').forEach(function(b){ b.classList.toggle('on',b.dataset.v===S.model); });
+  document.querySelectorAll('#yearList .ca-row').forEach(function(b){ b.classList.toggle('on',+b.dataset.v===S.year); });
+  document.getElementById('modelSub').textContent=t('mod.sub',{b:S.brand});
+  document.getElementById('yearSub').textContent=t('yr.sub',{m:S.model});
+  document.querySelectorAll('#useList .ca-use').forEach(function(b){ b.classList.toggle('on',b.dataset.v===S.use); });
+  document.querySelectorAll('#themeList .ca-th').forEach(function(b){ b.classList.toggle('on',b.dataset.v===S.look); });
+  /* loader */
+  document.getElementById('loadCar').textContent=car;
+  var st=document.querySelectorAll('#loadSteps .t');
+  st[0].textContent=t('ld.1',{m:S.model}); st[1].textContent=t('ld.2',{t:tn});
+  st[2].textContent=t(S.use==='connect'?'ld.3c':'ld.3p'); st[3].textContent=t('ld.4');
+  /* ready */
+  var tg=isTouareg();
+  ['readyCar','homeCar'].forEach(function(id){ document.getElementById(id).classList.toggle('hidden',!tg); });
+  document.getElementById('readyNoCar').classList.toggle('hidden',tg);
+  document.getElementById('readyCarName').textContent=car;
+  document.getElementById('prevMode').textContent=t(S.use==='connect'?'rd.c':'rd.p');
+  document.getElementById('prevTheme').textContent=t('rd.th',{t:tn});
+  document.getElementById('prevImg').src=th.img; document.getElementById('homeTheme').src=th.img;
+  /* paywall */
+  document.getElementById('payHero').src= tg ? 'img/pay-car.jpg' : 'img/pay-dash.jpg';
+  document.getElementById('payH').innerHTML=t('pw.h',{m:S.model});
+  document.getElementById('paySub').textContent=t(S.use==='connect'?'pw.subC':'pw.subP',{t:tn});
+  document.getElementById('payFeats').innerHTML=USES[S.use].f.map(function(k){ return '<li><span class="c">'+CK+'</span>'+t(k)+'</li>'; }).join('');
+  document.querySelectorAll('#planList .ca-plan').forEach(function(b){ b.classList.toggle('on',b.dataset.v===S.plan); });
+  /* offer */
+  document.getElementById('offSub').textContent=t('of.sub',{m:S.model});
+  /* home */
+  document.getElementById('homeMake').textContent=S.brand; document.getElementById('homeModel').textContent=S.model;
+  document.getElementById('homeYear').textContent='▣ '+S.year;
+}
+
+/* ================= router ================= */
+var ORDER=['welcome','brand','model','year','use','theme','loader','ready','paywall','offer','home'];
+var LABEL={welcome:'Welcome',brand:'Brand',model:'Model',year:'Year',use:'What to do',theme:'Theme',loader:'Loader',ready:'Ready',paywall:'Paywall',offer:'Offer on close',home:'Home'};
+var scr={}, hist=[], cur='welcome', loadTimers=[];
+document.querySelectorAll('.scr').forEach(function(s){ scr[s.dataset.id]=s; });
+
+function chrome(){ var light=S.theme==='light', photo=!!scr[cur].dataset.photo;
+  document.getElementById('sbar').classList.toggle('dk', light && !photo);
+  document.getElementById('homebar').classList.toggle('dk', light && cur!=='offer'); }
+function enter(id){ chrome(); paintChips(); paintPanel(); clearLoad();
+  if(id==='loader') runLoader();
+  var b=scr[id].querySelector('.scr-body'); if(b && !demo.on) b.scrollTop=0;
+  if(id==='model'||id==='year'){ var on=scr[id].querySelector('.ca-row.on'); if(on && b) requestAnimationFrame(function(){ b.scrollTop=Math.max(0,on.offsetTop-b.clientHeight/2+on.offsetHeight/2); }); } }
+function go(id,opts){
+  opts=opts||{}; if(id===cur) return;
+  var from=scr[cur], to=scr[id];
+  if(!opts.back) hist.push(cur);
+  if(from){ if(!to.classList.contains('sheet')) from.classList.remove('is-active');
+    if(!to.classList.contains('sheet') && !from.classList.contains('sheet')) from.classList.add('is-past'); }
+  Object.keys(scr).forEach(function(k){ if(k!==id && !(to.classList.contains('sheet') && k===cur)) scr[k].classList.remove('is-active'); });
+  to.classList.remove('is-past'); to.classList.add('is-active');
+  cur=id; enter(id);
+}
+function back(){
+  if(!hist.length) return;
+  var prev=hist.pop();
+  scr[cur].classList.remove('is-active');
+  scr[prev].classList.remove('is-past'); scr[prev].classList.add('is-active');
+  cur=prev; enter(prev);
+}
+function jump(id){
+  var i=ORDER.indexOf(id);
+  Object.keys(scr).forEach(function(k){ scr[k].classList.add('nofx'); scr[k].classList.remove('is-active','is-past'); });
+  hist=ORDER.slice(0,i<0?0:i);
+  if(id==='offer') scr.paywall.classList.add('is-active');
+  if(id==='welcome') S.slide=0;
+  scr[id].classList.add('is-active'); cur=id;
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ Object.keys(scr).forEach(function(k){ scr[k].classList.remove('nofx'); }); }); });
+  syncScreen(); enter(id);
+}
+var chipsBuilt=false;
+function paintChips(){
+  var c=document.getElementById('chips');
+  if(!chipsBuilt){ chipsBuilt=true;
+    ORDER.forEach(function(id){ var b=document.createElement('button'); b.className='chip'+(id==='offer'?' offer':''); b.textContent=LABEL[id];
+      b.dataset.id=id; b.onclick=function(){ stopDemo(); jump(id); }; c.appendChild(b); }); }
+  c.querySelectorAll('.chip').forEach(function(b){ b.classList.toggle('on',b.dataset.id===cur); });
+}
+function clearLoad(){ loadTimers.forEach(clearTimeout); loadTimers=[]; }
+function runLoader(){
+  var k=demo.on?0.48:1, steps=document.querySelectorAll('#loadSteps li'), T0=Date.now(), dur=4200*k;
+  steps.forEach(function(s){ s.classList.remove('on'); }); setDial(0);
+  (function tick(){ if(cur!=='loader') return; var p=Math.min(100,(Date.now()-T0)/dur*100); setDial(p);
+    if(p<100) loadTimers.push(setTimeout(tick,40)); })();
+  steps.forEach(function(s,i){ loadTimers.push(setTimeout(function(){ s.classList.add('on'); },(500+i*900)*k)); });
+  loadTimers.push(setTimeout(function(){ if(cur==='loader') go('ready'); },(dur+500*k)));
+}
+
+/* ================= wiring ================= */
+document.querySelectorAll('[data-go]').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.go); }); });
+document.querySelectorAll('[data-back]').forEach(function(b){ b.addEventListener('click',back); });
+document.querySelectorAll('[data-skip]').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.skip); }); });
+document.getElementById('welBtn').addEventListener('click',function(){ if(S.slide<2){ S.slide++; syncScreen(); } else go('brand'); });
+document.querySelectorAll('#planList .ca-plan').forEach(function(b){ b.addEventListener('click',function(){ S.plan=b.dataset.v; syncScreen(); }); });
+document.getElementById('payClose').addEventListener('click',function(){ go('offer'); });
+document.getElementById('payCta').addEventListener('click',function(){ go('home'); });
+document.getElementById('offerCta').addEventListener('click',function(){ go('home'); });
+document.getElementById('offClose').addEventListener('click',function(){ go('home'); });
+document.getElementById('offNo').addEventListener('click',function(){ go('home'); });
+
+function setSeg(id,attr,val){ document.querySelectorAll('#'+id+' button').forEach(function(b){ b.classList.toggle('on',b.dataset[attr]===val); }); }
+function setLang(l){ S.lang=l; S0.lang=l; setSeg('segLang','lang',l); applyStatic(); syncScreen(); paintPanel(); }
+function setTheme(th){ S.theme=th; S0.theme=th; document.getElementById('phoneIn').classList.toggle('light',th==='light'); setSeg('segTheme','theme',th); chrome(); }
+document.querySelectorAll('#segLang button').forEach(function(b){ b.addEventListener('click',function(){ stopDemo(); setLang(b.dataset.lang); }); });
+document.querySelectorAll('#segTheme button').forEach(function(b){ b.addEventListener('click',function(){ setTheme(b.dataset.theme); }); });
+
+/* ================= the 30-second walkthrough ================= */
+var demo={tok:0,on:false,t0:0,iv:null}, finger=document.getElementById('finger'), phoneIn=document.getElementById('phoneIn');
+function W(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+function cap(txt){ document.getElementById('demoTxt').textContent=txt; }
+async function tap(sel,tok){
+  if(demo.tok!==tok) throw 0;
+  var el=document.querySelector(sel); if(!el) return;
+  var r=el.getBoundingClientRect(), p=phoneIn.getBoundingClientRect(), z=p.width/phoneIn.offsetWidth||1;
+  finger.style.left=((r.left-p.left+r.width/2)/z)+'px'; finger.style.top=((r.top-p.top+r.height/2)/z)+'px';
+  finger.classList.add('show'); await W(380); if(demo.tok!==tok) throw 0;
+  finger.classList.add('press'); await W(120); finger.classList.remove('press'); el.click(); await W(160);
+  if(demo.tok!==tok) throw 0;
+}
+async function pause(ms,tok){ await W(ms); if(demo.tok!==tok) throw 0; }
+function startDemo(){
+  stopDemo(); var tok=++demo.tok; demo.on=true; demo.t0=Date.now();
+  var keep={lang:S.lang,theme:S.theme}; S=defaults(); S.lang=keep.lang; S.theme=keep.theme;
+  applyStatic(); jump('welcome');
+  document.getElementById('demoCap').classList.remove('hidden');
+  demo.iv=setInterval(function(){ document.getElementById('demoProg').style.width=Math.min(100,(Date.now()-demo.t0)/290)+'%'; },200);
+  (async function(){
+    try{
+      cap('Your three welcome slides, unchanged.'); await pause(900,tok);
+      await tap('#welBtn',tok); await pause(450,tok); await tap('#welBtn',tok); await pause(450,tok); await tap('#welBtn',tok);
+      cap('Brand, model and year, on your own logo tiles.'); await pause(600,tok);
+      await tap('#brandList [data-v="Volkswagen"]',tok); await pause(700,tok);
+      await tap('#modelList [data-v="Touareg"]',tok); await pause(700,tok);
+      await tap('#yearList [data-v="2020"]',tok);
+      cap('New spot: what they want to do comes before the price.'); await pause(700,tok);
+      await tap('#useList [data-v="phone"]',tok);
+      cap('Then their theme. Pick Sunset.'); await pause(700,tok);
+      await tap('#themeList [data-v="sunset"]',tok); await pause(450,tok); await tap('[data-id=theme] .ca-btn',tok);
+      cap('Your dial loader reads every answer back.'); await pause(2700,tok);
+      cap('Ready: their dashboard in their theme, next to your 4.5 stars.'); await pause(1700,tok);
+      await tap('[data-id=ready] .ca-btn',tok);
+      cap('The paywall now speaks to a phone-on-the-dash driver, with Yearly first.'); await pause(1800,tok);
+      await tap('#planList [data-v=week]',tok); await pause(600,tok); await tap('#planList [data-v=year]',tok); await pause(400,tok);
+      cap('They close it. Your free trial is the second chance.'); await tap('#payClose',tok); await pause(2400,tok);
+      cap('That is the flow: same screens, new order, one new offer.');
+      finger.classList.remove('show'); await pause(1800,tok); stopDemo();
+    }catch(e){}
+  })();
+}
+function stopDemo(){ if(!demo.on) return; demo.tok++; demo.on=false; clearInterval(demo.iv); finger.classList.remove('show','press');
+  document.getElementById('demoCap').classList.add('hidden'); }
+document.getElementById('demoBtn').addEventListener('click',startDemo);
+document.getElementById('demoStop').addEventListener('click',stopDemo);
+phoneIn.addEventListener('pointerdown',function(e){ if(e.isTrusted && demo.on) stopDemo(); });
+</script>
+<script>
+/* ---- the short panel: hypothesis + potential outcome, nothing else ---- */
+var PANEL={
+welcome:{ctx:true,t:'Your three welcome slides',
+ kept:'Untouched: CarPlay connection, dashboard personalisation and VIN check, in your order, with your photography, your blue Continue button and your pager dots.'},
+brand:{ctx:true,t:'Which car do you drive? Brand',
+ kept:'Untouched: your brand logo tiles, the Brand / Model / Year pills, “Skip setup”, the docked search field and the tap-to-advance list.'},
+model:{ctx:true,t:'Which car do you drive? Model',
+ kept:'Untouched: the model list for the brand they tapped, with the brand carried into the pill row. The model they pick names the paywall later.'},
+year:{ctx:true,t:'Which car do you drive? Year',
+ kept:'Untouched: the year list and the filled pills. Year, brand and model feed the loader, the ready screen and the home screen.'},
+use:{n:2,t:'Ask what they want before the price',
+ hyp:'Try asking “What would you like to do?” here instead of after the paywall, <b>because the answer tells the paywall whether to sell a car screen or a phone on the dash</b>. Tap the other card and watch the loader, the ready screen and the paywall change.',
+ kept:'Your two cards as they ship: icons, titles, sub-lines, the ticked lines and “Skip this step”. Only the position moved.',
+ out:'CR +10–15%'},
+theme:{n:2,t:'Ask what they want before the price',
+ hyp:'Try the theme picker before the paywall too, <b>because a dashboard they have already styled is one they have started to own</b>. The theme they pick shows on the ready screen and is named on the paywall.',
+ kept:'Your theme cards, the blue selected border and check, “Skip this step” and the docked Continue.',
+ out:'CR +10–15%'},
+loader:{n:2,t:'Ask what they want before the price',
+ hyp:'Try letting the loader read back every answer, <b>because it already names the car, and now it can name their theme and how they will use it</b>. Same dial, same four lines, more of them about this driver.',
+ kept:'Your blue dial with its tick marks and glow, the car name, “Personalizing your dashboard…” and the four check lines.',
+ out:'CR +10–15%'},
+ready:{n:5,t:'Put your 4.5 stars where they decide',
+ hyp:'Try showing the dashboard they just built and your App Store rating here, <b>because this is the last screen before the price, and 4.5 from 7.6K ratings appears nowhere in the flow today</b>.',
+ kept:'Your car photo, the green check, the car name and “Your car dashboard is ready!”. The preview is their own theme card. The rating is the live US App Store figure.',
+ out:'CR +10–15%'},
+paywall:{n:3,t:'Sell the screen they said they have',
+ hyp:'Try a sub-line and bullets that follow their answer, <b>because today a driver with no car screen is first sold a CarPlay connection</b>. Every bullet is your own copy, from the paywall or the “What would you like to do?” cards.',
+ out:'CR +10–15%',
+ n2:4,hyp2:'Try Yearly on top, pre-selected, with its saving shown, <b>because 7,99 € a week is 415,48 € a year, so 34,99 € is 91% less, and nothing on the screen says so</b>.',
+ out2:'ARPU +10–15%',
+ kept:'Your car-on-neon hero, “Unlock Full Access for Your Touareg” with the model in blue, the check list, both plan cards with “Most popular” on Weekly, “Secured by Apple · Cancel anytime”, the docked Continue and the Terms / Restore / Privacy row.'},
+offer:{n:1,t:'Offer the free trial when they close the paywall',
+ hyp:'Try this sheet when they tap the X, <b>because today the X leads to the same two prices twice more, and your Pro plan already lists a free trial on the App Store</b>. Same 34,99 € yearly plan, with nothing to pay today.',
+ kept:'Your type, blue, check circles and Continue button. No new price and no discount: the yearly price and the trial are both already in your store listing.',
+ out:'ARPU +10–15%'},
+home:{ctx:true,t:'Car Dashboard',
+ kept:'Where the flow hands over to the app: your header, the car card, Start Driving and the tab bar. The theme they chose is already on it. Your location request stays where it is, after onboarding.'}
+};
+function outBlock(lab,val){ return '<div class="pn-out"><div class="lab">'+lab+'</div><div class="v">'+val+'</div></div>'; }
+function paintPanel(){
+  var d=PANEL[cur]; if(!d) return; var h='';
+  if(d.ctx){ h+='<div class="pn-n ctx">Context · no change proposed</div><h3 class="pn-t">'+d.t+'</h3><div class="pn-kept">'+d.kept+'</div>'; }
+  else {
+    h+='<div class="pn-n">Idea '+d.n+' of 5</div><h3 class="pn-t">'+d.t+'</h3><p class="pn-hyp">'+d.hyp+'</p>'+outBlock('Potential outcome · based on Adapty data',d.out);
+    if(d.hyp2){ h+='<div class="pn-sep"></div><div class="pn-n">Idea '+d.n2+' of 5</div><h3 class="pn-t">Lead with yearly and show what it saves</h3><p class="pn-hyp">'+d.hyp2+'</p>'+outBlock('Potential outcome · based on Adapty data',d.out2); }
+    h+='<div class="pn-kept"><b>Your design, unchanged.</b> '+d.kept+'</div>';
+  }
+  if(S.lang!=='en') h+='<div class="pn-kept"><b>Language.</b> Screens are shown in '+(S.lang==='pt'?'Portuguese':'German')+' to show one flow serving every market. Translated by us; store prices stay in euros, as published in the app.</div>';
+  h+='<div class="pn-foot">Ranges are Adapty’s expected effect from tests across 30,000+ subscription apps — not measured lift for Car Auto Play. Prices, ratings and feature lines come from your own published material.</div>';
+  document.getElementById('panel').innerHTML=h;
+}
+
+/* ---- views, jumps from the overview ---- */
+function showView(v){
+  if(v!=='proto') stopDemo();
+  document.querySelectorAll('.view').forEach(function(x){ x.classList.remove('on'); });
+  document.getElementById('view-'+v).classList.add('on');
+  document.querySelectorAll('.nav-links button[data-view]').forEach(function(b){ b.classList.toggle('on',b.dataset.view===v); });
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-view]').forEach(function(b){ b.addEventListener('click',function(){ showView(b.dataset.view); }); });
+document.querySelectorAll('.idea[data-jump]').forEach(function(b){ b.addEventListener('click',function(){ showView('proto'); jump(b.dataset.jump); }); });
+document.querySelectorAll('[data-demo]').forEach(function(b){ b.addEventListener('click',function(){ showView('proto'); startDemo(); }); });
+
+applyStatic();
+scr.welcome.classList.add('is-active');
+syncScreen(); chrome(); paintChips(); paintPanel();
+if(/[?&]open=proto/.test(location.search)) showView('proto');
+</script>
+</body>
+</html>
